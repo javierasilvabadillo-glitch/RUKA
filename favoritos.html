@@ -1,0 +1,108 @@
+{% extends "base.html" %}
+{% block content %}
+<div class="container my-5 py-5" style="min-height: 70vh; margin-top: 50px;">
+    <div class="row align-items-center mb-4">
+        <div class="col-8">
+            <h2 class="fw-bold m-0">
+                <i class="bi bi-heart-fill text-danger me-2"></i> Mis Favoritos
+            </h2>
+        </div>
+        <div class="col-4 text-end">
+            <span class="badge bg-light text-dark border rounded-pill px-3 py-2" id="fav-status">
+                Cargando...
+            </span>
+        </div>
+    </div>
+    
+    <hr class="mb-5 opacity-25">
+
+    <div id="contenedor-favoritos" class="row g-4">
+        </div>
+
+    <div id="mensaje-vacio" class="text-center py-5 d-none">
+        <div class="mb-4">
+            <i class="bi bi-house-heart display-1 text-muted opacity-25"></i>
+        </div>
+        <h3 class="text-muted fw-light">Aún no tienes propiedades guardadas</h3>
+        <p class="text-muted mb-4">Explora nuestro catálogo y haz clic en el corazón para guardarlas aquí.</p>
+        <a href="/" class="btn btn-primary rounded-pill px-5 py-3 shadow-sm" style="background-color: var(--ruka-blue); border: none;">
+            VER PROPIEDADES
+        </a>
+    </div>
+</div>
+
+<script>
+    function cargarFavoritos() {
+        const lista = JSON.parse(localStorage.getItem('ruka_favs')) || [];
+        const contenedor = document.getElementById('contenedor-favoritos');
+        const mensajeVacio = document.getElementById('mensaje-vacio');
+        const status = document.getElementById('fav-status');
+
+        // Actualizamos el contador del menú si existe en base.html
+        if (typeof actualizarContador === "function") {
+            actualizarContador();
+        }
+
+        if (lista.length === 0) {
+            contenedor.innerHTML = '';
+            mensajeVacio.classList.remove('d-none');
+            status.innerText = "0 propiedades";
+            return;
+        }
+
+        mensajeVacio.classList.add('d-none');
+        status.innerText = `${lista.length} ${lista.length === 1 ? 'propiedad' : 'propiedades'}`;
+
+        contenedor.innerHTML = lista.map(p => `
+            <div class="col-md-6 col-lg-4" id="card-fav-${p.id}" style="transition: all 0.3s ease;">
+                <div class="card h-100 shadow-sm border-0 rounded-4 overflow-hidden">
+                    <img src="${p.img || 'https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800'}" 
+                         class="card-img-top" style="height: 220px; object-fit: cover;">
+                    <div class="card-body p-4 d-flex flex-column">
+                        <h5 class="fw-bold text-truncate mb-1">${p.titulo}</h5>
+                        <p class="text-primary fw-bold fs-5 mb-3">${p.precio}</p>
+                        
+                        <div class="d-flex gap-2 mt-auto">
+                            <a href="/propiedad/${p.id}" class="btn btn-dark btn-sm w-100 rounded-pill py-2">
+                                Ver Detalle
+                            </a>
+                            <button onclick="eliminarFavorito('${p.id}')" class="btn btn-outline-danger btn-sm rounded-pill px-3" title="Eliminar">
+                                <i class="bi bi-trash"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        `).join('');
+    }
+
+    function eliminarFavorito(id) {
+        let favoritos = JSON.parse(localStorage.getItem('ruka_favs')) || [];
+        // Filtramos por ID (convertimos a string para asegurar comparación exacta)
+        favoritos = favoritos.filter(f => String(f.id) !== String(id));
+        localStorage.setItem('ruka_favs', JSON.stringify(favoritos));
+        
+        // Efecto visual antes de refrescar
+        const card = document.getElementById(`card-fav-${id}`);
+        if (card) {
+            card.style.opacity = '0';
+            card.style.transform = 'translateY(20px)';
+        }
+        
+        setTimeout(() => {
+            cargarFavoritos();
+            // Intentar actualizar el numerito rojo de la navbar
+            const navCount = document.getElementById('fav-count');
+            if(navCount) navCount.innerText = favoritos.length;
+        }, 300);
+    }
+
+    document.addEventListener('DOMContentLoaded', cargarFavoritos);
+</script>
+
+<style>
+    /* Estilo extra para que las cards de favoritos se vean consistentes */
+    .card { transition: transform 0.3s ease; }
+    .card:hover { transform: translateY(-5px); }
+</style>
+{% endblock %}

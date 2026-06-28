@@ -1,0 +1,204 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Panel de Administración - Ruka</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+    <style>
+        :root { --primary-dark: #0A2647; --accent-gold: #B8976E; }
+        .navbar { background-color: var(--primary-dark); }
+        .btn-success { background-color: var(--accent-gold); border: none; transition: 0.3s; }
+        .btn-success:hover { background-color: #a3855d; transform: translateY(-1px); }
+        .card { border-radius: 12px; border: none; }
+        .x-small { font-size: 0.75rem; font-weight: bold; color: #6c757d; display: block; margin-bottom: 2px; }
+        /* Mantiene el formulario a la vista mientras haces scroll en la tabla */
+        @media (min-width: 768px) {
+            .sticky-form { position: sticky; top: 20px; }
+        }
+        .table img { object-fit: cover; border-radius: 4px; }
+    </style>
+</head>
+<body class="bg-light">
+
+<nav class="navbar navbar-expand-lg navbar-dark mb-4 shadow">
+    <div class="container">
+        <a class="navbar-brand fw-bold" href="#">RUKA <span class="fw-light">Admin</span></a>
+        <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse justify-content-end" id="navbarNav">
+            <div class="d-flex align-items-center">
+                <span class="text-white me-3 small d-none d-md-inline">
+                    <i class="bi bi-person-circle"></i> {{ current_user.username }}
+                </span>
+                <a href="/" class="btn btn-outline-light btn-sm me-2">Ver Sitio</a>
+                <a href="{{ url_for('logout') }}" class="btn btn-danger btn-sm">Salir</a>
+            </div>
+        </div>
+    </div>
+</nav>
+
+<div class="container pb-5">
+    {% with messages = get_flashed_messages(with_categories=true) %}
+      {% if messages %}
+        {% for category, message in messages %}
+          <div class="alert alert-{{ category }} alert-dismissible fade show shadow-sm" role="alert">
+            {{ message }}
+            <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+          </div>
+        {% endfor %}
+      {% endif %}
+    {% endwith %}
+
+    <div class="row g-4">
+        <div class="col-md-4">
+            <div class="card p-4 shadow-sm sticky-form">
+                <h4 class="fw-bold mb-3 small text-uppercase">Nueva Propiedad</h4>
+                <form action="{{ url_for('add_propiedad') }}" method="POST" enctype="multipart/form-data">
+
+                    <div class="mb-3">
+                        <label class="x-small text-muted text-uppercase text-muted">Información Básica</label>
+                        <input type="text" name="titulo" class="form-control mb-2" placeholder="Ej: Casa en la playa" required>
+                        <div class="input-group mb-2">
+                        <span class="input-group-text">$</span>
+                        <input type="text" name="precio" class="form-control" placeholder="Precio" required>
+                    </div>
+                        <input type="text" name="ubicacion" class="form-control mb-2" placeholder="Ubicación" required>
+                        <textarea name="descripcion" class="form-control" rows="3" placeholder="Descripción de la propiedad..."></textarea>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="x-small text-muted text-uppercase text-muted">Multimedia</label>
+                        <div class="mb-2">
+                            <label class="form-label x-small mb-1">Imagen Principal</label>
+                            <input type="file" name="imagen_archivo" class="form-control form-control-sm" accept="image/*" required>
+                        </div>
+                        <div class="mb-2">
+                            <label class="form-label x-small mb-1">Galería (Múltiples fotos)</label>
+                            <input type="file" name="galeria_archivos" class="form-control form-control-sm" multiple accept="image/*">
+                        </div>
+                    </div>
+
+                    <div class="mb-3">
+                        <label class="x-small text-muted text-uppercase">Categorización</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <select name="operacion" class="form-select form-select-sm">
+                                    <option value="Venta">Venta</option>
+                                    <option value="Arriendo">Arriendo</option>
+                                </select>
+                            </div>
+                            <div class="col-6">
+                                <select name="tipo" class="form-select form-select-sm">
+                                    <option value="Casa">Casa</option>
+                                    <option value="Departamento">Depto</option>
+                                    <option value="Parcela">Parcela</option>
+                                </select>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="mb-4">
+                        <label class="x-small text-muted text-uppercase">Detalles Técnicos</label>
+                        <div class="row g-2">
+                            <div class="col-6">
+                                <label class="x-small">Hab.</label>
+                                <input type="number" name="habitaciones" class="form-control" value="0" min="0">
+                            </div>
+                            <div class="col-6">
+                                <label class="x-small">Baños</label>
+                                <input type="number" name="banos" class="form-control" value="0" min="0">
+                            </div>
+                            <div class="col-6">
+                                <label class="x-small">Sup. m²</label>
+                                <input type="number" name="superficie" class="form-control" value="0" min="0">
+                            </div>
+                            <div class="col-6">
+                                <label class="x-small">Estac.</label>
+                                <input type="number" name="estacionamientos" class="form-control" value="0" min="0">
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" class="btn btn-success w-100 fw-bold shadow-sm py-2">
+                        <i class="bi bi-cloud-arrow-up"></i> PUBLICAR
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-md-8">
+            <div class="card p-4 shadow-sm">
+                <div class="d-flex justify-content-between align-items-center mb-3">
+                    <h4 class="fw-bold mb-0 text-uppercase small">Inventario Activo</h4>
+                    <span class="badge bg-secondary">{{ propiedades|length }} Propiedades</span>
+                </div>
+
+                <div class="table-responsive">
+                    <table class="table align-middle">
+                        <thead class="table-light">
+                            <tr class="x-small text-uppercase">
+                                <th>Propiedad</th>
+                                <th>Ubicación</th>
+                                <th>Precio</th>
+                                <th class="text-end">Acciones</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            {% for p in propiedades %}
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center">
+                                        <div class="fw-bold text-dark">{{ p.titulo }}</div>
+                                    </div>
+                                    <span class="badge {% if p.operacion == 'Venta' %}bg-primary{% else %}bg-info{% endif %} text-white mt-1" style="font-size: 0.6rem;">
+                                        {{ p.operacion }}
+                                    </span>
+                                </td>
+                                <td class="small text-muted"><i class="bi bi-geo-alt"></i> {{ p.ubicacion }}</td>
+                                <td class="fw-bold small text-success">
+  ${{ "{:,.0f}".format(p.precio|float).replace(",", ".") }}
+</td>
+                                <td class="text-end">
+                                    <div class="btn-group">
+                                        <a href="{{ url_for('edit_propiedad', id=p.id) }}" class="btn btn-outline-secondary btn-sm">
+    <i class="bi bi-pencil"></i>
+</a>
+
+                                        <form action="{{ url_for('delete_propiedad', id=p.id) }}" method="POST" style="display:inline;">
+    <button type="submit" class="btn btn-outline-danger btn-sm" onclick="return confirm('¿Estás seguro?')">
+        <i class="bi bi-trash"></i>
+    </button>
+</form>
+                                    </div>
+                                </td>
+                            </tr>
+                            {% else %}
+                            <tr>
+                                <td colspan="4" class="text-center text-muted py-4">No hay propiedades registradas aún.</td>
+                            </tr>
+                            {% endfor %}
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+document.querySelector('input[name="precio"]').addEventListener('input', function(e) {
+    let valor = e.target.value.replace(/\./g, '').replace(/\D/g, '');
+    
+    if (valor) {
+        e.target.value = Number(valor).toLocaleString('es-CL');
+    } else {
+        e.target.value = '';
+    }
+});
+</script>
+</body>
+</html>

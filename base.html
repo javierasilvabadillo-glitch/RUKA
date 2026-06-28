@@ -1,0 +1,285 @@
+<!DOCTYPE html>
+
+<html lang="es">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Ruka Propiedades</title>
+
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
+
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;700&display=swap" rel="stylesheet">
+
+   
+
+    <style>
+
+        :root {
+
+            --ruka-blue: #002347;
+
+            --ruka-light: #F4F7FB;
+
+        }
+
+        body {
+
+            font-family: 'Montserrat', sans-serif;
+
+            background-color: #f4f7f6;
+
+        }
+
+        .navbar {
+
+            background-color: var(--ruka-blue) !important;
+
+            box-shadow: 0 2px 10px rgba(0,0,0,0.2);
+
+        }
+
+        .nav-link {
+
+            color: white !important;
+
+            font-weight: 500;
+
+            margin-right: 15px;
+
+        }
+
+        .nav-link:hover {
+
+            color: var(--ruka-light) !important;
+
+        }
+
+        .btn-gold {
+
+            background-color: var(--ruka-light);
+
+            color: white;
+
+            border: none;
+
+        }
+
+        .btn-gold:hover {
+
+            background-color: #b08d4a;
+
+            color: white;
+
+        }
+
+        .social-icon-nav {
+
+            font-size: 1.2rem;
+
+            transition: transform 0.2s;
+
+        }
+
+        .social-icon-nav:hover {
+
+            transform: scale(1.2);
+
+        }
+
+
+
+        /* Corrección para el menú móvil */
+
+        @media (max-width: 991.98px) {
+
+            .navbar-collapse {
+
+                background-color: var(--ruka-blue);
+
+                padding: 1rem;
+
+                border-radius: 0 0 10px 10px;
+
+                margin-top: 10px;
+
+                box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+
+            }
+
+            .nav-item {
+
+                border-bottom: 1px solid rgba(255,255,255,0.1);
+
+                padding: 5px 0;
+
+            }
+
+            .nav-item:last-child { border-bottom: none; }
+
+        }
+
+
+
+        .logo-custom {
+
+            height: 40px;
+
+            width: auto;
+
+            border-radius: 5px;
+
+            object-fit: contain;
+
+        }
+
+        .navbar-brand span {
+
+            color: var(--ruka-gold);
+
+            font-size: 1.2rem;
+
+        }
+
+    </style>
+
+</head>
+
+<body>
+
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark sticky-top">
+
+        <div class="container">
+
+            <a class="navbar-brand d-flex align-items-center fw-bold" href="{{ url_for('home') }}">
+
+                <img src="https://i.postimg.cc/nL9NTTmX/LOGO.jpg" alt="Logo Ruka" class="logo-custom me-2">
+
+                <span style="letter-spacing: 2px;">RUKA URBANA</span>
+
+            </a>
+
+           
+
+            <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+
+                <span class="navbar-toggler-icon"></span>
+
+            </button>
+
+           
+
+            <div class="collapse navbar-collapse" id="navbarNav">
+
+                <ul class="navbar-nav ms-auto align-items-center">
+
+                    <li class="nav-item d-flex me-lg-3">
+
+                        <a class="nav-link px-2 social-icon-nav" href="https://facebook.com/rukaurbana.cl" target="_blank">
+
+                            <i class="bi bi-facebook"></i>
+
+                        </a>
+
+                        <a class="nav-link px-2 social-icon-nav" href="https://instagram.com/rukaurbana.cl" target="_blank">
+
+                            <i class="bi bi-instagram"></i>
+
+                        </a>
+
+                    </li>
+
+
+
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="{{ url_for('home') }}">Propiedades</a>
+
+                    <li class="nav-item">
+
+    <a class="nav-link position-relative" href="/favoritos">
+
+        <i class="bi bi-heart-fill text-danger d-lg-none"></i> Favoritos
+
+        <span class="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger d-none" id="fav-count">0</span>
+
+    </a>
+
+</li>
+
+                    </li>
+
+                    <li class="nav-item">
+
+                        <a class="nav-link" href="#">Contacto</a>
+
+                    </li>
+
+            </div>
+
+        </div>
+
+    </nav>
+
+
+
+    <main>
+
+        {% block content %}{% endblock %}
+
+    </main>
+
+
+
+    <footer class="bg-dark text-white py-5 mt-5">
+
+        <div class="container text-center">
+
+            <div class="mb-4">
+
+                <h5 class="fw-bold mb-3">Ruka Propiedades</h5>
+
+                <p class="small text-muted mb-4">Gestión Inmobiliaria Integral</p>
+
+               
+
+                <div class="d-flex justify-content-center gap-3">
+
+                    <a href="https://facebook.com/rukaurbana.cl" class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center" target="_blank" style="width: 40px; height: 40px;">
+
+                        <i class="bi bi-facebook"></i>
+
+                    </a>
+
+                    <a href="https://instagram.com/rukaurbana.cl" class="btn btn-outline-light btn-sm rounded-circle d-flex align-items-center justify-content-center" target="_blank" style="width: 40px; height: 40px;">
+
+                        <i class="bi bi-instagram"></i>
+
+                    </a>
+
+                </div>
+
+            </div>
+
+            <hr class="bg-secondary w-50 mx-auto my-4">
+
+            <p class="mb-0 small text-muted">&copy; 2026 Ruka Propiedades - Chillán, Chile</p>
+
+        </div>
+
+    </footer>
+
+
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+
+</body>
+
+</html>

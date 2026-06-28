@@ -1,0 +1,83 @@
+{% extends "base.html" %}
+
+{% block content %}
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+
+<div class="login-overlay">
+    <div class="login-box shadow-lg">
+        <h2 class="brand-name">RUKA URBANA</h2>
+        <p class="brand-sub">Gestión Inmobiliaria</p>
+
+        {% with messages = get_flashed_messages() %}
+          {% if messages %}
+            {% for message in messages %}
+              <div class="alert alert-danger p-2 small mb-3">{{ message }}</div>
+            {% endfor %}
+          {% endif %}
+        {% endwith %}
+
+        <form method="POST">
+            <div class="mb-3 text-start">
+                <label class="form-label fw-bold small">Usuario</label>
+                <input type="text" name="username" class="form-control custom-input" placeholder="admin" required>
+            </div>
+
+            <div class="mb-4 text-start">
+                <label class="form-label fw-bold small">Contraseña</label>
+                <input type="password" name="password" class="form-control custom-input" placeholder="••••••••" required>
+            </div>
+
+            <button type="submit" class="btn btn-gold w-100 fw-bold">
+                INGRESAR AL PANEL
+            </button>
+        </form>
+
+        <a href="/" class="back-home mt-4 d-inline-block">← Volver al sitio público</a>
+    </div>
+</div>
+
+<style>
+    /* Estilos específicos para replicar la imagen original */
+    .login-overlay {
+        background: radial-gradient(circle at center, #1e2a4a 0%, #0a0e1a 100%);
+        min-height: 100vh;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        position: fixed;
+        top: 0;
+        left: 0;
+        width: 100%;
+        z-index: 9999;
+    }
+    .login-box {
+        background: white;
+        padding: 3rem 2rem;
+        border-radius: 20px;
+        width: 100%;
+        max-width: 420px;
+        text-align: center;
+    }
+    .brand-name { color: #1a2a6c; font-weight: 800; letter-spacing: 1px; margin-bottom: 0; }
+    .brand-sub { color: #666; font-size: 0.85rem; margin-bottom: 2.5rem; }
+
+    .custom-input {
+        background-color: #f1f4f9;
+        border: 1px solid #dee2e6;
+        padding: 0.7rem 1rem;
+        border-radius: 8px;
+    }
+    .btn-gold {
+        background-color: #b8955a;
+        color: white;
+        border: none;
+        padding: 0.8rem;
+        border-radius: 8px;
+        transition: 0.3s;
+    }
+    .btn-gold:hover { background-color: #a3844d; color: white; transform: translateY(-2px); }
+    .back-home { color: #888; text-decoration: none; font-size: 0.85rem; }
+    .back-home:hover { color: #1a2a6c; }
+</style>
+{% endblock %}
+

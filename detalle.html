@@ -1,0 +1,243 @@
+{% extends "base.html" %} 
+{% block content %}
+
+<style>
+    :root {
+        --ruka-blue: #1a2a44;    /* Azul Marino Elegante */
+        --ruka-gold: #c5a059;    /* Dorado Sofisticado */
+        --ruka-light: #f8fafc;   /* Fondo Nieve */
+        --glass-bg: rgba(255, 255, 255, 0.85);
+    }
+
+    body { 
+        background-color: #f0f2f5; 
+        font-family: 'Inter', system-ui, -apple-system, sans-serif;
+        color: var(--ruka-blue);
+    }
+
+    /* Efecto Glassmorphism */
+    .glass-card {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid rgba(255, 255, 255, 0.5);
+        border-radius: 24px;
+        box-shadow: 0 10px 40px rgba(26, 42, 68, 0.06);
+    }
+
+    /* Navegación Breadcrumb */
+    .custom-breadcrumb {
+        padding: 10px 25px;
+        display: inline-block;
+    }
+
+    /* Carrusel de Imágenes */
+    .carousel-main {
+        border-radius: 24px;
+        overflow: hidden;
+        box-shadow: 0 20px 40px rgba(0,0,0,0.15);
+        background-color: #e2e8f0;
+    }
+
+    /* Tarjetas de Características */
+    .feature-card {
+        background: #ffffff;
+        border-radius: 20px;
+        border: 1px solid #edf2f7;
+        padding: 20px;
+        transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+    }
+    .feature-card:hover {
+        transform: translateY(-8px);
+        border-color: var(--ruka-gold);
+        box-shadow: 0 12px 20px rgba(197, 160, 89, 0.12);
+    }
+    .feature-card i { 
+        color: var(--ruka-gold); 
+        font-size: 1.8rem; 
+        margin-bottom: 8px;
+        display: block;
+    }
+
+    /* Botón WhatsApp Flotante */
+    .whatsapp-float {
+        position: fixed;
+        width: 65px; height: 65px;
+        bottom: 30px; right: 30px;
+        background: #25d366;
+        color: white;
+        border-radius: 50%;
+        display: flex; align-items: center; justify-content: center;
+        font-size: 32px;
+        z-index: 1000;
+        box-shadow: 0 10px 25px rgba(37, 211, 102, 0.3);
+        transition: 0.3s ease-in-out;
+        text-decoration: none;
+    }
+    .whatsapp-float:hover { 
+        transform: scale(1.1) rotate(5deg); 
+        color: white; 
+        box-shadow: 0 12px 30px rgba(37, 211, 102, 0.5);
+    }
+
+    /* Badge de Operación */
+    .badge-operation {
+        background: var(--ruka-blue);
+        color: white;
+        padding: 8px 25px;
+        border-radius: 50px;
+        font-weight: 700;
+        text-transform: uppercase;
+        letter-spacing: 1px;
+        font-size: 0.85rem;
+    }
+
+    /* Utilidades de Texto */
+    .text-gold { color: var(--ruka-gold); }
+    .text-blue { color: var(--ruka-blue); }
+
+    /* Estilo del Mapa */
+    .map-container {
+        border-radius: 20px;
+        overflow: hidden;
+        border: 1px solid rgba(0,0,0,0.05);
+        box-shadow: 0 5px 15px rgba(0,0,0,0.05);
+    }
+
+    @media (max-width: 768px) {
+        .carousel-main .carousel-inner { height: 320px !important; }
+        .whatsapp-float { width: 55px; height: 55px; font-size: 28px; bottom: 20px; right: 20px; }
+    }
+</style>
+
+<div class="container mt-5 pt-5 pb-5">
+    
+    <div class="glass-card custom-breadcrumb mb-4">
+        <nav aria-label="breadcrumb">
+            <ol class="breadcrumb m-0 small fw-medium">
+                <li class="breadcrumb-item"><a href="{{ url_for('home') }}" class="text-decoration-none text-muted">Inicio</a></li>
+                <li class="breadcrumb-item active text-blue" aria-current="page">{{ propiedad.titulo }}</li>
+            </ol>
+        </nav>
+    </div>
+
+    <div class="row g-4">
+        <div class="col-lg-8">
+            
+            <div id="propCarousel" class="carousel slide carousel-main mb-4" data-bs-ride="carousel">
+                <div class="carousel-inner" style="height: 520px;">
+                    <div class="carousel-item active h-100">
+                        {% if propiedad.imagen_url %}
+                            <img src="{{ url_for('static', filename=propiedad.imagen_url) }}" 
+                                 class="d-block w-100 h-100" alt="{{ propiedad.titulo }}" style="object-fit: cover;">
+                        {% else %}
+                            <img src="{{ url_for('static', filename='img/default.jpg') }}" 
+                                 class="d-block w-100 h-100" alt="Sin imagen" style="object-fit: cover;">
+                        {% endif %}
+                    </div>
+
+                    {% if propiedad.imagenes %}
+                        {% for img in propiedad.imagenes %}
+                        <div class="carousel-item h-100">
+                            <img src="{{ url_for('static', filename=img.ruta) }}" 
+                                 class="d-block w-100 h-100" alt="Galería Ruka" style="object-fit: cover;">
+                        </div>
+                        {% endfor %}
+                    {% endif %}
+                </div>
+                {% if propiedad.imagenes and propiedad.imagenes|length > 0 %}
+                <button class="carousel-control-prev" type="button" data-bs-target="#propCarousel" data-bs-slide="prev">
+                    <span class="carousel-control-prev-icon"></span>
+                </button>
+                <button class="carousel-control-next" type="button" data-bs-target="#propCarousel" data-bs-slide="next">
+                    <span class="carousel-control-next-icon"></span>
+                </button>
+                {% endif %}
+            </div>
+
+            <div class="glass-card p-4 p-md-5 mb-4">
+                <div class="d-flex justify-content-between align-items-start mb-3 flex-wrap">
+                    <div class="mb-2">
+                        <h1 class="fw-bold text-blue mb-1 h2">{{ propiedad.titulo }}</h1>
+                        <p class="text-muted mb-0"><i class="bi bi-geo-alt-fill text-gold me-2"></i>{{ propiedad.ubicacion }}</p>
+                    </div>
+                    <span class="badge bg-light text-blue border px-3 py-2 rounded-pill fw-bold">{{ propiedad.tipo }}</span>
+                </div>
+                
+                <div class="d-flex align-items-center mb-4">
+                    <h2 class="text-gold fw-bold m-0 me-3"> ${{ "{:,.0f}".format(propiedad.precio|float).replace(",", ".") }}</h2>
+                </div>
+
+                <hr class="my-4 opacity-25">
+                
+                <h5 class="fw-bold text-blue mb-3 text-uppercase small" style="letter-spacing: 1px;">Descripción de la propiedad</h5>
+                <p class="text-muted mb-0" style="white-space: pre-line; line-height: 1.8; font-size: 1.05rem;">
+                    {{ propiedad.descripcion }}
+                </p>
+            </div>
+
+            <div class="row g-3 mb-4 text-center">
+                {% set specs = [
+                    ('bi-door-open', 'Habitaciones', propiedad.habitaciones),
+                    ('bi-droplet', 'Baños', propiedad.banos),
+                    ('bi-arrows-fullscreen', 'Superficie', propiedad.superficie ~ ' m²'),
+                    ('bi-car-front', 'Estac.', propiedad.estacionamientos)
+                ] %}
+                {% for icon, label, val in specs %}
+                <div class="col-6 col-md-3">
+                    <div class="feature-card h-100 shadow-sm">
+                        <i class="{{ icon }}"></i>
+                        <span class="d-block fw-bold text-blue fs-5">{{ val or '0' }}</span>
+                        <small class="text-muted text-uppercase fw-bold" style="font-size: 0.65rem; letter-spacing: 0.5px;">{{ label }}</small>
+                    </div>
+                </div>
+                {% endfor %}
+            </div>
+
+            <div class="glass-card p-4">
+                <h5 class="fw-bold text-blue mb-3"><i class="bi bi-pin-map-fill me-2 text-gold"></i>Ubicación Referencial</h5>
+                <div class="map-container ratio ratio-21x9">
+                    <iframe 
+                        src="https://maps.google.com/maps?q={{ propiedad.ubicacion|urlencode }}&t=&z=15&ie=UTF8&iwloc=&output=embed" 
+                        style="border:0;" allowfullscreen="" loading="lazy">
+                    </iframe>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-lg-4">
+            <div class="sticky-top" style="top: 110px; z-index: 10;">
+                <div class="glass-card p-4 text-center border-top border-5 border-gold shadow">
+                    <div class="mb-4">
+                        <span class="badge-operation shadow-sm">{{ propiedad.operacion }}</span>
+                    </div>
+                    
+                    <h5 class="fw-bold text-blue mb-4">¿Te interesa esta propiedad?</h5>
+                    
+                    <div class="d-grid gap-3">
+                        <a href="https://wa.me/56944218561?text={{ 'Hola Ruka Propiedades, me gustaría recibir más información sobre: ' ~ propiedad.titulo ~ ' (ID: ' ~ propiedad.id ~ ')' | urlencode }}" 
+                           class="btn btn-success py-3 fw-bold rounded-pill shadow-sm" target="_blank">
+                            <i class="bi bi-whatsapp me-2"></i> WhatsApp Directo
+                        </a>
+                        
+                        <a href="mailto:contacto@rukapropiedades.cl?subject=Interés Propiedad ID {{ propiedad.id }}&body=Hola, solicito información sobre {{ propiedad.titulo }}" 
+                           class="btn btn-outline-dark py-3 fw-bold rounded-pill">
+                            <i class="bi bi-envelope me-2"></i> Enviar un Correo
+                        </a>
+                    </div>
+                    
+                    <div class="mt-4 pt-3 border-top border-light">
+                        <p class="small text-muted mb-0">Código de Referencia: <span class="fw-bold text-blue">#{{ propiedad.id }}</span></p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<a href="https://wa.me/56944218561?text={{ 'Hola Ruka Propiedades, me interesa la propiedad: ' ~ propiedad.titulo | urlencode }}" 
+   class="whatsapp-float shadow-lg" target="_blank" title="Contáctanos">
+    <i class="bi bi-whatsapp"></i>
+</a>
+
+{% endblock %}

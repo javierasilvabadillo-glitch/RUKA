@@ -1,0 +1,397 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ruka Urbana - Corretaje y Construcción</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.1/font/bootstrap-icons.css">
+
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Montserrat:wght@300;400;600;700&display=swap');
+
+        :root {
+            --ruka-blue: #0A2647;
+            --ruka-gold: #B8976E;
+            --ruka-light: #F4F7FB;
+            --whatsapp-green: #25d366;
+        }
+
+        body {
+            background-color: var(--ruka-light);
+            font-family: 'Montserrat', sans-serif;
+            color: #333;
+            overflow-x: hidden;
+        }
+
+        /* --- NAVBAR --- */
+        .navbar { transition: all 0.4s ease; padding: 20px 0; }
+        .navbar.scrolled {
+            background-color: var(--ruka-blue) !important;
+            padding: 10px 0;
+            box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+        }
+        @media (max-width: 991px) {
+            .navbar { background-color: var(--ruka-blue) !important; padding: 10px 0; }
+        }
+        .logo-custom { height: 45px; width: auto; border-radius: 6px; }
+
+        /* --- HERO --- */
+        .hero {
+            background: linear-gradient(rgba(10, 38, 71, 0.75), rgba(10, 38, 71, 0.75)),
+                        url('https://images.unsplash.com/photo-1512917774080-9991f1c4c750?auto=format&fit=crop&w=1200');
+            background-size: cover; background-position: center; background-attachment: fixed;
+            color: white; padding: 180px 0 120px 0;
+            clip-path: ellipse(150% 100% at 50% 0%);
+        }
+
+        /* --- CARDS Y FAVORITOS --- */
+        .card-propiedad {
+            border: none; border-radius: 16px;
+            transition: all 0.3s cubic-bezier(.25,.8,.25,1);
+            overflow: hidden; background: white;
+        }
+        .card-propiedad:hover { transform: translateY(-10px); box-shadow: 0 15px 30px rgba(0,0,0,0.1) !important; }
+        .img-wrapper { position: relative; height: 240px; overflow: hidden; }
+        .img-wrapper img { width: 100%; height: 100%; object-fit: cover; transition: transform 0.6s ease; }
+        .card-propiedad:hover .img-wrapper img { transform: scale(1.1); }
+
+        /* Botón de Favorito */
+        .btn-fav {
+            position: absolute; top: 15px; right: 15px;
+            background: white; border: none; width: 35px; height: 35px;
+            border-radius: 50%; display: flex; align-items: center; justify-content: center;
+            z-index: 10; cursor: pointer; transition: all 0.3s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+        .btn-fav i { color: #ccc; font-size: 1.2rem; transition: color 0.3s; }
+        .btn-fav.active i { color: #e74c3c; }
+        .btn-fav.active i::before { content: "\F415"; } /* Corazón relleno */
+
+        .badge-operacion {
+            position: absolute; top: 15px; left: 15px; background: var(--ruka-gold);
+            color: white; padding: 6px 15px; border-radius: 50px; font-weight: 600; font-size: 0.8rem; z-index: 2;
+        }
+        .price-tag { color: var(--ruka-blue); font-weight: 700; font-size: 1.35rem; }
+
+        /* --- CONSTRUCCIÓN --- */
+        .hover-lift { transition: transform 0.3s ease; }
+        .hover-lift:hover { transform: translateY(-8px); }
+
+        /* --- WHATSAPP --- */
+        .btn-whatsapp {
+            position: fixed; bottom: 30px; right: 30px; background-color: var(--whatsapp-green);
+            color: white; border-radius: 50%; width: 65px; height: 65px;
+            display: flex; align-items: center; justify-content: center;
+            font-size: 32px; z-index: 1050; box-shadow: 0 6px 20px rgba(37, 211, 102, 0.4);
+            text-decoration: none; animation: pulse-wa 2s infinite;
+        }
+        @keyframes pulse-wa {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
+        }
+        html { scroll-behavior: smooth; }
+    </style>
+</head>
+
+<body>
+
+<nav class="navbar navbar-expand-lg navbar-dark fixed-top" id="mainNav">
+    <div class="container">
+        <a class="navbar-brand fw-bold d-flex align-items-center" href="/">
+            <img src="https://i.postimg.cc/nL9NTTmX/LOGO.jpg" alt="Logo Ruka" class="logo-custom">
+            <span class="ms-2 d-none d-sm-inline" style="letter-spacing: 2px;">RUKA URBANA</span>
+        </a>
+        <button class="navbar-toggler border-0" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav">
+            <span class="navbar-toggler-icon"></span>
+        </button>
+        <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav ms-auto align-items-center">
+                <li class="nav-item"><a class="nav-link" href="/">Inicio</a></li>
+                <li class="nav-item"><a class="nav-link" href="#propiedades">Propiedades</a></li>
+                <li class="nav-item"><a class="nav-link" href="#construccion">Construcción</a></li>
+                <li class="nav-item"><a class="nav-link" href="/favoritos">
+                    <i class="fill text-danger me-1"></i> Favoritos <span id="fav-count" class="badge rounded-pill bg-danger" style="font-size: 0.7rem;">0</span>
+                </a></li>
+                <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+                <li class="nav-item me-lg-3"><a class="nav-link" href="#contacto">Contacto</a></li>
+                <li class="nav-item">
+                    <a href="{{ url_for('login') }}" class="btn btn-outline-light btn-sm px-4 rounded-pill">Admin</a>
+                </li>
+            </ul>
+        </div>
+    </div>
+</nav>
+
+<header class="hero text-center">
+    <div class="container">
+        <h1 class="display-3 fw-bold mb-3">Tu próxima propiedad comienza aquí</h1>
+        <p class="lead mb-5 opacity-90">Gestión inmobiliaria y construcción de confianza en el Ñuble.</p>
+
+        <div class="card shadow-lg border-0 p-4 text-start mx-auto" style="border-radius: 20px; max-width: 900px;">
+            <form method="GET" action="/" class="row g-3 align-items-end">
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-muted small ms-1">¿QUÉ BUSCAS?</label>
+                    <select name="operacion" class="form-select border-0 bg-light py-2">
+                        <option value="">Todas</option>
+                        <option value="Venta">Venta</option>
+                        <option value="Arriendo">Arriendo</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <label class="form-label fw-bold text-muted small ms-1">TIPO DE PROPIEDAD</label>
+                    <select name="tipo" class="form-select border-0 bg-light py-2">
+                        <option value="">Cualquier tipo</option>
+                        <option value="Casa">Casa</option>
+                        <option value="Departamento">Departamento</option>
+                        <option value="Parcela">Parcela / Terreno</option>
+                    </select>
+                </div>
+                <div class="col-md-4">
+                    <button type="submit" class="btn btn-primary w-100 fw-bold py-2 rounded-3" style="background-color: var(--ruka-gold); border: none;">
+                        <i class="bi bi-search me-2"></i> BUSCAR AHORA
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</header>
+
+<main class="container my-5 py-5" id="propiedades">
+    <div class="d-flex justify-content-between align-items-center mb-5">
+        <h2 class="fw-bold m-0">Propiedades Destacadas</h2>
+        <div class="linea-decorativa d-none d-md-block flex-grow-1 ms-4 bg-secondary opacity-25" style="height: 1px;"></div>
+    </div>
+
+    <div class="row g-4">
+        {% for p in propiedades %}
+        <div class="col-md-6 col-lg-4">
+            <div class="card card-propiedad h-100 shadow-sm">
+                <div class="img-wrapper">
+                    <span class="badge-operacion">{{ p.operacion }}</span>
+
+                    <button class="btn-fav"
+                            data-id="{{ p.id }}"
+                            data-titulo="{{ p.titulo }}"
+                            data-precio="{{ p.precio }}"
+                            data-img="{{ url_for('static', filename=p.imagen_url) if p.imagen_url else '' }}"
+                            id="fav-{{ p.id }}">
+                        <i class="bi bi-heart"></i>
+                    </button>
+
+                    {% if p.imagen_url %}
+                        <img src="{{ url_for('static', filename=p.imagen_url) }}" alt="{{ p.titulo }}">
+                    {% else %}
+                        <img src="https://images.unsplash.com/photo-1560518883-ce09059eeffa?auto=format&fit=crop&w=800" alt="Propiedad">
+                    {% endif %}
+                </div>
+
+                <div class="card-body p-4 d-flex flex-column">
+                    <h5 class="fw-bold mb-2 text-truncate">{{ p.titulo }}</h5>
+                    <p class="text-muted small mb-4"><i class="bi bi-geo-alt-fill text-danger"></i> {{ p.ubicacion or 'Chillán' }}</p>
+
+                    <div class="d-flex justify-content-between border-top border-bottom py-3 mb-4 text-muted">
+                        <span class="small"><i class="bi bi-door-open me-1"></i> {{ p.habitaciones }} Dorm.</span>
+                        <span class="small"><i class="bi bi-droplet me-1"></i> {{ p.banos }} Baños</span>
+                        <span class="small"><i class="bi bi-fullscreen me-1"></i> {{ p.superficie }}m²</span>
+                    </div>
+
+                    <div class="d-flex justify-content-between align-items-center mt-auto">
+                        <span class="price-tag"> ${{ "{:,.0f}".format(p.precio|float).replace(",", ".") }}
+                        </span>
+                        <div class="btn-group shadow-sm">
+                            <a href="{{ url_for('detalle_propiedad', id=p.id) }}" class="btn btn-sm btn-white border px-3">Ver</a>
+                            <a href="https://wa.me/56944218561?text=Me interesa: {{ p.titulo }}" class="btn btn-sm btn-success px-3" target="_blank">
+                                <i class="bi bi-whatsapp"></i>
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        {% endfor %} </div>
+</main>
+
+<section id="construccion" class="py-5" style="background-color: #fff; border-top: 4px solid var(--ruka-gold); border-bottom: 1px solid #eee;">
+    <div class="container py-5">
+        <div class="row mb-5 text-center">
+            <div class="col-lg-8 mx-auto">
+                <h2 class="fw-bold display-5" style="color: var(--ruka-blue);">Arquitectura & Construcción</h2>
+                <p class="lead text-muted">Desde la idea inicial hasta la entrega de llaves.</p>
+                <div class="mx-auto" style="width: 80px; height: 3px; background-color: var(--ruka-gold);"></div>
+            </div>
+        </div>
+        <div class="row g-4">
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-light p-4 text-center hover-lift">
+                    <i class="bi bi-house-add-fill h1 mb-3" style="color: var(--ruka-gold);"></i>
+                    <h4 class="fw-bold">Obras Nuevas</h4>
+                    <p class="text-muted small">Viviendas y construcciones con diseño moderno y eficiencia térmica.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-light p-4 text-center hover-lift">
+                    <i class="bi bi-tools h1 mb-3" style="color: var(--ruka-blue);"></i>
+                    <h4 class="fw-bold">Remodelaciones</h4>
+                    <p class="text-muted small">Ampliaciones y modernización de cocinas, baños y espacios comunes.</p>
+                </div>
+            </div>
+            <div class="col-md-4">
+                <div class="card h-100 border-0 bg-light p-4 text-center hover-lift">
+                    <i class="bi bi-pencil-square h1 mb-3" style="color: var(--ruka-gold);"></i>
+                    <h4 class="fw-bold">Regularizaciones y Tasaciones</h4>
+                    <p class="text-muted small">Gestión de permisos municipales y planos para dejar tu casa al día.</p>
+                </div>
+            </div>
+        </div>
+        <div class="mt-5 text-center">
+            <a href="https://wa.me/56944218561?text=Hola, necesito cotizar un proyecto de construcción" class="btn btn-primary btn-lg px-5 fw-bold rounded-pill" style="background-color: var(--ruka-blue); border: none;">
+                <i class="bi bi-chat-dots me-2"></i>Cotizar Proyecto
+            </a>
+        </div>
+    </div>
+</section>
+
+<section id="nosotros" class="bg-white py-5">
+     <div class="container py-5">
+         <div class="row align-items-center">
+            <div class="col-md-6">
+                <h2 class="fw-bold mb-4">Sobre RUKA</h2>
+                <p class="lead text-muted">Entendemos que una propiedad es más que ladrillos; es tu futuro.</p>
+                <p class="text-muted">Nos especializamos en la gestión personalizada en Chillán y alrededores, combinando el corretaje con soluciones constructivas reales.</p>
+                <div class="mt-4">
+                    <p class="fw-bold text-primary"><i class="bi bi-check-circle-fill me-2"></i> Gestión de Confianza</p>
+                    <p class="fw-bold text-primary"><i class="bi bi-check-circle-fill me-2"></i> Equipo Multidisciplinario</p>
+                </div>
+             </div>
+            <div class="col-md-6 text-center">
+                <img src="https://i.postimg.cc/nL9NTTmX/LOGO.jpg" class="img-fluid rounded shadow-lg" alt="Logo Ruka" style="max-height: 300px;">
+            </div>
+         </div>
+     </div>
+</section>
+
+<section id="contacto" class="container py-5 my-5">
+    <div class="row justify-content-center">
+        <div class="col-md-6">
+            <div class="bg-white p-4 p-lg-5 shadow rounded-4">
+                <h3 class="fw-bold text-center mb-2">Contáctanos</h3>
+                <p class="text-center text-muted mb-4">¿Tienes dudas? Déjanos un mensaje.</p>
+                <form action="/contacto" method="POST">
+                    <div class="mb-3"><input type="text" name="nombre" class="form-control bg-light border-0" placeholder="Tu Nombre" required></div>
+                    <div class="row">
+                        <div class="col-md-6 mb-3"><input type="email" name="email" class="form-control bg-light border-0" placeholder="Email" required></div>
+                        <div class="col-md-6 mb-3"><input type="tel" name="celular" class="form-control bg-light border-0" placeholder="Celular" required></div>
+                    </div>
+                    <div class="mb-3"><textarea name="mensaje" class="form-control bg-light border-0" rows="4" placeholder="¿En qué podemos ayudarte?" required></textarea></div>
+                    <button type="submit" class="btn btn-primary w-100 py-3 fw-bold" style="background-color: var(--ruka-gold); border:none;">ENVIAR MENSAJE</button>
+                </form>
+            </div>
+        </div>
+    </div>
+</section>
+
+<footer class="py-5" style="background-color: var(--ruka-blue); color: white;">
+    <div class="container text-center">
+        <h4 class="fw-bold mb-0">Ruka Urbana</h4>
+        <p class="small opacity-50 mb-4">Corretaje y Construcción de Propiedades</p>
+        <hr class="my-4 opacity-25">
+        <div class="mb-4">
+            <a href="https://www.instagram.com/rukaurbana.cl" class="text-white mx-3 h4"><i class="bi bi-instagram"></i></a>
+            <a href="https://www.facebook.com/rukaurbana.cl" class="text-white mx-3 h4"><i class="bi bi-facebook"></i></a>
+        </div>
+        <p class="mb-0 small opacity-50">Chillán, Chile. | WhatsApp: +56 9 4421 8561</p>
+
+        <p class="small mb-0 opacity-50">© 2026 Ruka Urbana Spa.</p>
+    </div>
+</footer>
+
+<a href="https://wa.me/56944218561" class="btn-whatsapp" target="_blank"><i class="bi bi-whatsapp"></i></a>
+
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<script>
+
+    // 1. FUNCIÓN ÚNICA PARA ACTUALIZAR EL CONTADOR
+    function actualizarContador() {
+        const favoritos = JSON.parse(localStorage.getItem('ruka_favs')) || [];
+        const contador = document.getElementById('fav-count');
+        if (contador) {
+            contador.innerText = favoritos.length;
+            // Mostramos u ocultamos el badge según si hay elementos
+            if (favoritos.length > 0) {
+                contador.classList.remove('d-none');
+            } else {
+                contador.classList.add('d-none');
+            }
+        }
+    }
+
+    // 2. ESCUCHADOR DE CLIC GLOBAL (Favoritos)
+    document.addEventListener('click', function (e) {
+        const btn = e.target.closest('.btn-fav');
+
+        if (btn) {
+            e.preventDefault();
+
+            const id = btn.getAttribute('data-id');
+            const titulo = btn.getAttribute('data-titulo');
+            const precio = btn.getAttribute('data-precio');
+            const img = btn.getAttribute('data-img');
+
+            let favoritos = JSON.parse(localStorage.getItem('ruka_favs')) || [];
+            const index = favoritos.findIndex(f => String(f.id) === String(id));
+
+            if (index === -1) {
+                favoritos.push({ id, titulo, precio, img });
+                btn.classList.add('active');
+            } else {
+                favoritos.splice(index, 1);
+                btn.classList.remove('active');
+            }
+
+            localStorage.setItem('ruka_favs', JSON.stringify(favoritos));
+            actualizarContador();
+        }
+    });
+
+    // 3. CARGA INICIAL Y NAVBAR
+    document.addEventListener('DOMContentLoaded', () => {
+        const favoritos = JSON.parse(localStorage.getItem('ruka_favs')) || [];
+
+        // Sincronizar estado de botones visuales
+        favoritos.forEach(f => {
+            const btn = document.getElementById(`fav-${f.id}`);
+            if (btn) btn.classList.add('active');
+        });
+
+        actualizarContador();
+
+        // Lógica de cierre automático de menú móvil
+        const navLinks = document.querySelectorAll('.nav-link');
+        const menuToggle = document.getElementById('navbarNav');
+        if (menuToggle) {
+            const bsCollapse = new bootstrap.Collapse(menuToggle, {toggle: false});
+            navLinks.forEach((l) => {
+                l.addEventListener('click', () => {
+                    if (window.innerWidth < 992) bsCollapse.hide();
+                });
+            });
+        }
+    });
+
+    // 4. LÓGICA DE SCROLL PARA NAVBAR
+    window.addEventListener('scroll', function() {
+        const nav = document.getElementById('mainNav');
+        if (nav) {
+            if (window.scrollY > 50) {
+                nav.classList.add('scrolled');
+            } else {
+                nav.classList.remove('scrolled');
+            }
+        }
+    });
+</script>
+
+</body>
+</html>
